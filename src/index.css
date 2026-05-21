@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* កំណត់ Font ខ្មែរ និង Font អង់គ្លេសជា Default សម្រាប់ Web ទាំងមូល */
+body {
+  font-family: 'Kantumruy Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* បង្កើត Class ជំនួយសម្រាប់ហៅប្រើចំៗ */
+.font-khmer {
+  font-family: 'Kantumruy Pro', sans-serif;
+}
