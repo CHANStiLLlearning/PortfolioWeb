@@ -54,13 +54,13 @@ export default function Navbar() {
 
           <span className="h-4 w-[1px] bg-slate-800"></span>
 
-          {/* <Link
+          <Link
             to="/admin/login"
             className="relative inline-flex items-center justify-center px-4 py-2 text-xs font-mono tracking-widest text-cyan-400 uppercase border border-cyan-500/30 rounded-lg overflow-hidden group transition-all duration-300 hover:border-cyan-400 hover:text-slate-950 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]"
           >
             <span className="absolute inset-0 w-full h-full bg-cyan-400 scale-x-0 group-hover:scale-x-100 group-hover:duration-300 origin-left transition-transform ease-out -z-10"></span>
             Admin Login
-          </Link> */}
+          </Link>
         </div>
 
         {/* 📱 MOBILE HAMBURGER BUTTON (ប៊ូតុងម៉ឺនុយសម្រាប់ទូរស័ព្ទ) */}
