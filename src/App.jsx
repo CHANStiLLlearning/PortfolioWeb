@@ -33,6 +33,7 @@ export default function App() {
 
           {/* ផ្លូវសម្រាប់ Admin (ឥឡូវវានឹងហៅទំព័រ UI ពិតប្រាកដមកបង្ហាញ) */}
           <Route path="/admin/login" element={<AdminLogin />} />
+
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
       </div>
