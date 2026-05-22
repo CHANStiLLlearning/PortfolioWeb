@@ -16,7 +16,7 @@ export default function Skills() {
   // 🔄 ទាញទិន្នន័យជំនាញពី Database ពេល Component បើកដំបូង
   useEffect(() => {
     axios
-      .get("http://localhost/portfolio-api/get_skills.php")
+      .get(`${import.meta.env.VITE_API_URL}/get_skills.php`)
       .then((response) => {
         setSkills(Array.isArray(response.data) ? response.data : []);
         setLoading(false);

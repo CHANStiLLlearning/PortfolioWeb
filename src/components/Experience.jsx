@@ -8,7 +8,7 @@ export default function Experience() {
   // 🔄 ទាញទិន្នន័យបទពិសោធន៍ពី Database ពេល Component បើកដំបូង
   useEffect(() => {
     axios
-      .get("http://localhost/portfolio-api/get_experiences.php")
+      .get(`${import.meta.env.VITE_API_URL}/get_experiences.php`)
       .then((response) => {
         // ប្រសិនបើទិន្នន័យមកជា Array គឺយើងយកមកប្រើ បើមិនមែនទេទម្លាក់មក Array ទទេ
         setExperiences(Array.isArray(response.data) ? response.data : []);

@@ -21,7 +21,7 @@ export default function AdminLogin({ onLoginSuccess }) {
     formData.append("password", password);
 
     axios
-      .post("http://localhost/portfolio-api/login.php", formData)
+      .post(`${import.meta.env.VITE_API_URL}/login.php`, formData)
       .then((res) => {
         setLoading(false);
         if (res.data.success) {

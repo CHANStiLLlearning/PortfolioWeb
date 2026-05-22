@@ -7,7 +7,7 @@ export default function Projects() {
 
   useEffect(() => {
     axios
-      .get("http://localhost/portfolio-api/get_projects.php")
+      .get(`${import.meta.env.VITE_API_URL}/get_projects.php`)
       .then((response) => {
         setProjects(response.data);
         setLoading(false);
@@ -72,7 +72,7 @@ export default function Projects() {
                 <div className="w-full aspect-[16/10] bg-slate-900 overflow-hidden relative">
                   {project.image ? (
                     <img
-                      src={`http://localhost/portfolio-api/uploads/${project.image}`}
+                      src={`${import.meta.env.VITE_API_URL}/uploads/${project.image}`}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700 ease-out"
                       loading="lazy"

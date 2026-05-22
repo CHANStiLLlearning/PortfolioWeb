@@ -88,7 +88,7 @@ export default function AdminDashboard() {
     formData.append("password", password);
 
     axios
-      .post("http://localhost/portfolio-api/login.php", formData)
+      .post(`${import.meta.env.VITE_API_URL}/login.php`, formData)
       .then((res) => {
         if (res.data.success) {
           setIsLoggedIn(true);
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
   // ─── ⚙️ FETCH DATA FUNCTIONS ───
   const fetchProjects = () => {
     axios
-      .get("http://localhost/portfolio-api/get_projects.php")
+      .get(`${import.meta.env.VITE_API_URL}/get_projects.php`)
       .then((res) => {
         setProjects(Array.isArray(res.data) ? res.data : []);
         setLoadingProjects(false);
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
 
   const fetchSkills = () => {
     axios
-      .get("http://localhost/portfolio-api/get_skills.php")
+      .get(`${import.meta.env.VITE_API_URL}/get_skills.php`)
       .then((res) => {
         setSkills(Array.isArray(res.data) ? res.data : []);
         setLoadingSkills(false);
@@ -164,7 +164,7 @@ export default function AdminDashboard() {
 
   const fetchExperiences = () => {
     axios
-      .get("http://localhost/portfolio-api/get_experiences.php")
+      .get(`${import.meta.env.VITE_API_URL}/get_experiences.php`)
       .then((res) => {
         setExperiences(Array.isArray(res.data) ? res.data : []);
         setLoadingExperiences(false);
@@ -208,7 +208,7 @@ export default function AdminDashboard() {
     if (isEditingProject) {
       formData.append("id", editProjectId);
       axios
-        .post("http://localhost/portfolio-api/update_project.php", formData)
+        .post(`${import.meta.env.VITE_API_URL}/update_project.php`, formData)
         .then((res) => {
           if (res.data.success) {
             Swal.fire({
@@ -226,7 +226,7 @@ export default function AdminDashboard() {
         .catch((err) => console.error(err));
     } else {
       axios
-        .post("http://localhost/portfolio-api/add_project.php", formData)
+        .post(`${import.meta.env.VITE_API_URL}/add_project.php`, formData)
         .then((res) => {
           if (res.data.success) {
             Swal.fire({
@@ -284,7 +284,7 @@ export default function AdminDashboard() {
         const f = new FormData();
         f.append("id", id);
         axios
-          .post("http://localhost/portfolio-api/delete_project.php", f)
+          .post(`${import.meta.env.VITE_API_URL}/delete_project.php`, f)
           .then((res) => {
             if (res.data.success) {
               Swal.fire({
@@ -323,7 +323,7 @@ export default function AdminDashboard() {
     if (isEditingSkill) {
       formData.append("id", editSkillId);
       axios
-        .post("http://localhost/portfolio-api/update_skill.php", formData)
+        .post(`${import.meta.env.VITE_API_URL}/update_skill.php`, formData)
         .then((res) => {
           if (res.data.success) {
             Swal.fire({
@@ -340,7 +340,7 @@ export default function AdminDashboard() {
         });
     } else {
       axios
-        .post("http://localhost/portfolio-api/add_skill.php", formData)
+        .post(`${import.meta.env.VITE_API_URL}/add_skill.php`, formData)
         .then((res) => {
           if (res.data.success) {
             Swal.fire({
@@ -391,7 +391,7 @@ export default function AdminDashboard() {
         const f = new FormData();
         f.append("id", id);
         axios
-          .post("http://localhost/portfolio-api/delete_skill.php", f)
+          .post(`${import.meta.env.VITE_API_URL}/delete_skill.php`, f)
           .then((res) => {
             if (res.data.success) {
               Swal.fire({
@@ -430,7 +430,7 @@ export default function AdminDashboard() {
     if (isEditingExp) {
       formData.append("id", editExpId);
       axios
-        .post("http://localhost/portfolio-api/update_experience.php", formData)
+        .post(`${import.meta.env.VITE_API_URL}/update_experience.php`, formData)
         .then((res) => {
           if (res.data.success) {
             Swal.fire({
@@ -447,7 +447,7 @@ export default function AdminDashboard() {
         });
     } else {
       axios
-        .post("http://localhost/portfolio-api/add_experience.php", formData)
+        .post(`${import.meta.env.VITE_API_URL}/add_experience.php`, formData)
         .then((res) => {
           if (res.data.success) {
             Swal.fire({
@@ -500,7 +500,7 @@ export default function AdminDashboard() {
         const f = new FormData();
         f.append("id", id);
         axios
-          .post("http://localhost/portfolio-api/delete_experience.php", f)
+          .post(`${import.meta.env.VITE_API_URL}/delete_experience.php`, f)
           .then((res) => {
             if (res.data.success) {
               Swal.fire({
