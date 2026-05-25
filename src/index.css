@@ -11,3 +11,77 @@ body {
 .font-khmer {
   font-family: 'Kantumruy Pro', sans-serif;
 }
+
+.ml2 {
+  display: inline-block;
+  white-space: pre;
+}
+
+.ml2 .letter {
+  display: inline-block;
+  opacity: 0;
+  transform: scale(4);
+  animation: ml2Animation 4.5s ease-out infinite;
+  animation-fill-mode: both;
+}
+
+@keyframes ml2Animation {
+  0%, 10% {
+    opacity: 0;
+    transform: scale(4);
+  }
+  20%, 80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  90%, 100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+.animated-role-list {
+  display: grid;
+  animation: slideRoles 9s ease-in-out infinite;
+}
+
+.animated-role-item {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+}
+
+@keyframes slideRoles {
+  0%, 20% {
+    transform: translateY(0);
+    filter: blur(0);
+    opacity: 1;
+  }
+  24%, 28% {
+    filter: blur(1.2px);
+    opacity: 0.3;
+  }
+  33.333%, 53.333% {
+    transform: translateY(-100%);
+    filter: blur(0);
+    opacity: 1;
+  }
+  57%, 61% {
+    filter: blur(1.2px);
+    opacity: 0.3;
+  }
+  66.666%, 86.666% {
+    transform: translateY(-200%);
+    filter: blur(0);
+    opacity: 1;
+  }
+  90%, 95% {
+    filter: blur(1.2px);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(0);
+    filter: blur(0);
+    opacity: 1;
+  }
+}

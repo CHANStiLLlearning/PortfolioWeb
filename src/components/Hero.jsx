@@ -1,62 +1,73 @@
 import React from "react";
+import img from "../assets/keokimchan.png";
 
 export default function Hero() {
   return (
-    <section
-      id="about"
-      className="bg-[#030712] text-slate-100 py-24 px-4 sm:py-32 relative overflow-hidden flex items-center justify-center min-h-[85vh]"
-    >
-      {/* 🔮 Background Decorative Glow (ពន្លឺអូរ៉ូរ៉ា និងក្រឡាចត្រង្គស៊ីប៊ែរ) */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] sm:w-[500px] sm:h-[500px] bg-cyan-500/10 blur-[130px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b08_1px,transparent_1px),linear-gradient(to_bottom,#1e293b08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+    <section id="about" className="relative overflow-hidden bg-[#030712] text-slate-100">
+      <div className="absolute inset-x-0 top-0 h-96 bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.16),_transparent_45%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b0a_1px,transparent_1px),linear-gradient(to_bottom,#1e293b0a_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto text-center relative z-10 space-y-8 px-2">
-        {/* 🚀 BADGE */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-[11px] sm:text-xs text-cyan-400 font-mono uppercase tracking-widest mx-auto">
-          <span className="flex h-2 w-2 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-          </span>
-          Available for projects
-        </div>
+      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+          <div className="order-2 lg:order-1">
+            <div className="mx-auto max-w-[28rem] overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-950/80 shadow-2xl shadow-slate-950/40">
+              <img src={img} alt="Profile of Keo Kimchan" className="h-96 w-full object-cover" />
+            </div>
+          </div>
 
-        {/* 👑 MAIN TITLE */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight uppercase font-khmer">
-          សួស្តី! ខ្ញុំបាទ{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 block sm:inline mt-2 sm:mt-0">
-            អ្នកអភិវឌ្ឍន៍ Web
-          </span>
-        </h1>
+          <div className="order-1 lg:order-2">
+            <div className="space-y-6 text-center lg:text-left">
+              <span className="inline-flex font-khmer items-center gap-2 rounded-full border border-slate-800 bg-slate-900/70 px-4 py-2 text-xl font-medium uppercase tracking-[0.3em] text-cyan-300 shadow-sm">
+                <span className="flex h-2.5 w-2.5 rounded-full bg-cyan-400 animate-pulse" />
+                ត្រៀមខ្លួនរួចសម្រាប់គំរោងថ្មី
+              </span>
 
-        {/* 📝 DESCRIPTION */}
-        <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto font-light leading-relaxed font-khmer">
-          ខ្ញុំជា{" "}
-          <span className="text-slate-200 font-medium">
-            Full-Stack Web Developer
-          </span>{" "}
-          ម្នាក់ដែលស្រឡាញ់ការបង្កើតគេហទំព័រដែលមានភាពទំនើប មានល្បឿនលឿន
-          និងបទពិសោធន៍ប្រើប្រាស់{" "}
-          <span className="text-cyan-400/90 font-mono">UI/UX</span>{" "}
-          ងាយស្រួលបំផុត។ នេះជាកន្លែងបង្ហាញពីសមត្ថភាព និងស្នាដៃរបស់ខ្ញុំ។
-        </p>
+              <div>
+                <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
+                  Keo Kimchan
+                </h1>
+                <div className="mt-3 space-y-2">
+                  <p className="ml2 text-3xl font-semibold tracking-tight text-transparent bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 bg-clip-text">
+                    {Array.from('Full-Stack Web Developer').map((letter, index) => (
+                      <span
+                        key={index}
+                        className="letter"
+                        style={{ animationDelay: `${70 * index}ms` }}
+                      >
+                        {letter === ' ' ? '\u00A0' : letter}
+                      </span>
+                    ))}
+                  </p>
+                </div>
+              </div>
 
-        {/* ⚡ CALL TO ACTIONS */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
-          {/* Button 1 */}
-          <a
-            href="#projects"
-            className="w-full sm:w-auto relative inline-flex items-center justify-center px-7 py-3 text.5 text-sm font-mono tracking-wider text-slate-950 bg-cyan-400 rounded-xl font-bold overflow-hidden group transition-all duration-300 hover:bg-cyan-300 hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] text-center"
-          >
-            មើល Projects
-          </a>
+              <p className="w-full text-base leading-10 text-slate-400 xl:text-[25px] sm:text-lg lg:max-w-none font-khmer">
+                ខ្ញុំបង្កើត Web applications និងគេហទំព័រដែលមានភាពទាក់ទាញ ល្បឿនលឿន និង UX/UI។ ជាមួយនឹងការរួមគ្នា យើងអាចបម្លែងគំនិតរបស់អ្នកទៅជាបទពិសោធន៍ឌីជីថលពិត។
+              </p>
 
-          {/* Button 2 */}
-          <a
-            href="#contact"
-            className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3 text-sm font-mono tracking-wider text-slate-300 border border-slate-800 rounded-xl font-medium bg-slate-900/40 backdrop-blur-sm hover:border-cyan-500/40 hover:text-cyan-400 transition-all duration-300 text-center"
-          >
-            ទាក់ទងខ្ញុំ
-          </a>
+              <div className="flex flex-wrap gap-3 lg:justify-start justify-center">
+                <span className="rounded-full bg-slate-900/70 px-4 py-2 text-sm text-slate-200">React</span>
+                <span className="rounded-full bg-slate-900/70 px-4 py-2 text-sm text-slate-200">Node.js</span>
+                <span className="rounded-full bg-slate-900/70 px-4 py-2 text-sm text-slate-200">Tailwind</span>
+                <span className="rounded-full bg-slate-900/70 px-4 py-2 text-sm text-slate-200">Next.js</span>
+              </div>
+
+              <div className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start mt-6">
+                <a
+                  href="#projects"
+                  className="inline-flex font-khmer items-center justify-center rounded-2xl bg-cyan-400 px-8 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition duration-300 hover:bg-cyan-300"
+                >
+                  មើល Projects
+                </a>
+                <a
+                  href="#contact"
+                  className="inline-flex font-khmer items-center justify-center rounded-2xl border border-slate-800 bg-white/5 px-8 py-3 text-sm font-medium text-slate-200 transition duration-300 hover:border-cyan-400 hover:text-cyan-300"
+                >
+                  ទាក់ទងខ្ញុំ
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

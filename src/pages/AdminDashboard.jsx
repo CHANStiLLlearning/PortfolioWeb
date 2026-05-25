@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 // ─── 導入 SWEETALERT2 ───
 import Swal from "sweetalert2";
-
+import img from "../assets/keokimchan.png";
 export default function AdminDashboard() {
-  // ─── 🔐 AUTHENTICATION STATES ───
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
+  const navigate = useNavigate();
+
+  // ─── 🔐 AUTHENTICATION (now handled by AdminLogin) ───
+  const [isAuthenticated] = useState(() => {
+    return localStorage.getItem("admin_auth") === "true";
+  });
 
   const [activeTab, setActiveTab] = useState("projects");
   const [projects, setProjects] = useState([]);
@@ -43,99 +45,7 @@ export default function AdminDashboard() {
   const [isEditingExp, setIsEditingExp] = useState(false);
   const [editExpId, setEditExpId] = useState(null);
 
-  // ─── 🎨 SWEETALERT2 DARK THEME CONFIG ───
-  // បង្កើត Custom Class សម្រាប់ជំនួសស្ទីលរបស់ SweetAlert2 ឱ្យទៅជា Dark Mode
-  const swalConfig = {
-    background: "#0f172a", // bg-slate-900
-    color: "#f1f5f9", // text-slate-100
-    confirmButtonColor: "#06b6d4", // bg-cyan-500
-    cancelButtonColor: "#334155", // bg-slate-700
-    customClass: {
-      popup: "border border-slate-800 rounded-2xl shadow-xl font-sans",
-      title: "text-xl font-bold tracking-wider",
-      htmlContainer: "text-slate-400 text-sm",
-      confirmButton: "px-5 py-2 rounded-lg font-semibold text-slate-900",
-      cancelButton: "px-5 py-2 rounded-lg font-semibold text-white",
-    },
-  };
-
-  useEffect(() => {
-    const savedAuth = localStorage.getItem("admin_auth");
-    if (savedAuth === "true") {
-      setIsLoggedIn(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      fetchProjects();
-      fetchSkills();
-      fetchExperiences();
-    }
-  }, [isLoggedIn]);
-
-  // ─── 🔐 LOGIN & LOGOUT HANDLERS ───
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    setLoginError("");
-
-    if (!username.trim() || !password.trim()) {
-      return setLoginError("សូមបំពេញ Username និង Password!");
-    }
-
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("password", password);
-
-    axios
-      .post(`${import.meta.env.VITE_API_URL}/login.php`, formData)
-      .then((res) => {
-        if (res.data.success) {
-          setIsLoggedIn(true);
-          localStorage.setItem("admin_auth", "true");
-
-          // Toast Notification ពេល Login ជោគជ័យ
-          Swal.fire({
-            ...swalConfig,
-            icon: "success",
-            title: "ស្វាគមន៍ការត្រឡប់មកវិញ!",
-            text: "អ្នកបានចូលប្រព័ន្ធដោយជោគជ័យ។",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        } else {
-          setLoginError(
-            res.data.message || "Username ឬ Password មិនត្រឹមត្រូវទេ!",
-          );
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoginError("មានបញ្ហាក្នុងការភ្ជាប់ទៅកាន់ Server!");
-      });
-  };
-
-  const handleLogout = () => {
-    Swal.fire({
-      ...swalConfig,
-      icon: "question",
-      title: "ចាកចេញពីប្រព័ន្ធ?",
-      text: "តើអ្នកពិតជាចង់ចាកចេញពីគណនី Admin មែនទេ?",
-      showCancelButton: true,
-      confirmButtonText: "ចាកចេញ",
-      cancelButtonText: "បោះបង់",
-      confirmButtonColor: "#ef4444", // ពណ៌ក្រហមសម្រាប់ប៊ូតុងចាកចេញ
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setIsLoggedIn(false);
-        localStorage.removeItem("admin_auth");
-        setUsername("");
-        setPassword("");
-      }
-    });
-  };
-
-  // ─── ⚙️ FETCH DATA FUNCTIONS ───
+  // ─── ⚙️ FETCH DATA FUNCTIONS (defined early for useEffect references) ───
   const fetchProjects = () => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/get_projects.php`)
@@ -173,6 +83,57 @@ export default function AdminDashboard() {
         console.error(err);
         setLoadingExperiences(false);
       });
+  };
+
+  // ─── 🎨 SWEETALERT2 DARK THEME CONFIG ───
+  // បង្កើត Custom Class សម្រាប់ជំនួសស្ទីលរបស់ SweetAlert2 ឱ្យទៅជា Dark Mode
+  const swalConfig = {
+    background: "#0f172a", // bg-slate-900
+    color: "#f1f5f9", // text-slate-100
+    confirmButtonColor: "#06b6d4", // bg-cyan-500
+    cancelButtonColor: "#334155", // bg-slate-700
+    customClass: {
+      popup: "border border-slate-800 rounded-2xl shadow-xl font-sans",
+      title: "text-xl font-bold tracking-wider",
+      htmlContainer: "text-slate-400 text-sm",
+      confirmButton: "px-5 py-2 rounded-lg font-semibold text-slate-900",
+      cancelButton: "px-5 py-2 rounded-lg font-semibold text-white",
+    },
+  };
+
+  // ─── 🔐 REDIRECT TO LOGIN IF NOT AUTHENTICATED ───
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/admin/login", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
+  // ─── 📥 FETCH DATA WHEN AUTHENTICATED ───
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchProjects();
+      fetchSkills();
+      fetchExperiences();
+    }
+  }, [isAuthenticated]);
+
+  // ─── 🔐 LOGOUT HANDLER ───
+  const handleLogout = () => {
+    Swal.fire({
+      ...swalConfig,
+      icon: "question",
+      title: "ចាកចេញពីប្រព័ន្ធ?",
+      text: "តើអ្នកពិតជាចង់ចាកចេញពីគណនី Admin មែនទេ?",
+      showCancelButton: true,
+      confirmButtonText: "ចាកចេញ",
+      cancelButtonText: "បោះបង់",
+      confirmButtonColor: "#ef4444",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("admin_auth");
+        navigate("/admin/login");
+      }
+    });
   };
 
   const getIdProperty = (item) => {
@@ -519,88 +480,45 @@ export default function AdminDashboard() {
     });
   };
 
-  // ─── 1. ផ្ទាំង LOGIN FORM ───
-  if (!isLoggedIn) {
+  // ─── 🔐 AUTH GUARD (redirect handled by useEffect) ───
+  if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4 font-sans text-slate-100">
-        <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-cyan-400 tracking-wider">
-              Admin Authentication
-            </h2>
-            <p className="text-sm text-slate-400 mt-1">
-              សូមបញ្ចូលគណនីរបស់អ្នកដើម្បីគ្រប់គ្រងទិន្នន័យ
-            </p>
-          </div>
-
-          {loginError && (
-            <div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-sm text-red-400 text-center">
-              ⚠️ {loginError}
-            </div>
-          )}
-
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm text-slate-400 mb-1">
-                Username
-              </label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"
-                placeholder="បញ្ចូលឈ្មោះគណនី"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-slate-400 mb-1">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"
-                placeholder="••••••••"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2.5 rounded-lg transition mt-2 shadow-lg shadow-cyan-500/20"
-            >
-              ចូលប្រព័ន្ធ (Login)
-            </button>
-          </form>
-        </div>
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-400 font-khmer">
+        Redirecting to login...
       </div>
     );
   }
 
-  // ─── 2. ផ្ទាំង DASHBOARD (LOGIN រួចរាល់) ───
+  // ─── 2. DASHBOARD UI (after successful login via AdminLogin) ───
   return (
     <div className="flex min-h-screen bg-slate-950 text-slate-100 font-sans">
       {/* ─── SIDEBAR MENU ─── */}
       <div className="w-64 bg-slate-900 border-r border-slate-800 p-6 flex flex-col justify-between">
         <div>
-          <h2 className="text-xl font-bold text-cyan-400 mb-8 tracking-wider">
-            Admin Panel
-          </h2>
+          {/* <h2 className="text-xl font-bold text-cyan-400 mb-8 tracking-wider">
+            
+          </h2> */}
+          <img src={img} alt="Admin Avatar" className="w-15 h-15 rounded-full mx-auto mb-4" />
+          <p className="text-center text-sm text-slate-400 mb-6 font-khmer">
+            អ្នកគ្រប់គ្រង!
+          </p>
+
           <nav className="space-y-2">
             <button
               onClick={() => setActiveTab("projects")}
-              className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition ${activeTab === "projects" ? "bg-cyan-500 text-slate-900" : "hover:bg-slate-800 text-slate-400"}`}
+              className={`w-full text-left px-4 py-2.5 font-khmer rounded-lg font-medium transition ${activeTab === "projects" ? "bg-cyan-500 text-slate-900" : "hover:bg-slate-800 text-slate-400"}`}
             >
               📁 គ្រប់គ្រង Projects
             </button>
             <button
               onClick={() => setActiveTab("skills")}
-              className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition ${activeTab === "skills" ? "bg-cyan-500 text-slate-900" : "hover:bg-slate-800 text-slate-400"}`}
+              className={`w-full text-left px-4 py-2.5 font-khmer rounded-lg font-medium transition ${activeTab === "skills" ? "bg-cyan-500 text-slate-900" : "hover:bg-slate-800 text-slate-400"}`}
             >
               ⚡ គ្រប់គ្រង Skills
             </button>
             <button
               onClick={() => setActiveTab("experiences")}
-              className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition ${activeTab === "experiences" ? "bg-cyan-500 text-slate-900" : "hover:bg-slate-800 text-slate-400"}`}
+              className={`w-full text-left px-4 py-2.5 font-khmer rounded-lg font-medium transition ${activeTab === "experiences" ? "bg-cyan-500 text-slate-900" : "hover:bg-slate-800 text-slate-400"}`}
             >
               💼 គ្រប់គ្រង Experiences
             </button>
@@ -609,7 +527,7 @@ export default function AdminDashboard() {
 
         <button
           onClick={handleLogout}
-          className="w-full text-left px-4 py-2.5 rounded-lg font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition mt-auto"
+          className="w-full text-left px-4 py-2.5 rounded-lg font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition mt-auto font-khmer"
         >
           🚪 ចាកចេញ (Logout)
         </button>
@@ -620,40 +538,40 @@ export default function AdminDashboard() {
         {/* ======================= TAB 1: PROJECTS ======================= */}
         {activeTab === "projects" && (
           <div>
-            <h1 className="text-2xl font-bold mb-6">
+            <h1 className="text-2xl font-bold mb-6 font-khmer">
               📁 គ្រប់គ្រងគម្រោង (Projects Management)
             </h1>
             <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 mb-8 max-w-2xl">
-              <h3 className="text-lg font-semibold text-cyan-400 mb-4">
+              <h3 className="text-lg font-semibold text-cyan-400 mb-4 font-khmer">
                 {isEditingProject
                   ? "📝 កែប្រែព័ត៌មាន Project"
                   : "➕ បន្ថែម Project ថ្មី"}
               </h3>
               <form onSubmit={handleProjectSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     ឈ្មោះ Project
                   </label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 font-khmer"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     បច្ចេកវិទ្យាប្រើប្រាស់
                   </label>
                   <input
                     type="text"
                     value={tech}
                     onChange={(e) => setTech(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 font-khmer"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     រូបភាពគម្រោង
                   </label>
                   <input
@@ -661,24 +579,24 @@ export default function AdminDashboard() {
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 font-khmer"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     ការពិពណ៌នា
                   </label>
                   <textarea
                     rows="3"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 font-khmer"
                   ></textarea>
                 </div>
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-semibold px-5 py-2 rounded-lg transition"
+                    className="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-semibold px-5 py-2 rounded-lg transition font-khmer"
                   >
                     {isEditingProject ? "រក្សាទុក" : "បន្ថែម"}
                   </button>
@@ -686,7 +604,7 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       onClick={resetProjectForm}
-                      className="bg-slate-700 px-5 py-2 rounded-lg"
+                      className="bg-slate-700 px-5 py-2 rounded-lg font-khmer"
                     >
                       បោះបង់
                     </button>
@@ -697,15 +615,15 @@ export default function AdminDashboard() {
 
             <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
               {loadingProjects ? (
-                <div className="p-8 text-center text-gray-400">កំពុងដើរ...</div>
+                <div className="p-8 text-center text-gray-400 font-khmer">កំពុងដើរ...</div>
               ) : (
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-800 text-slate-300 border-b border-slate-700">
-                      <th className="p-4">រូបភាព</th>
-                      <th className="p-4">ឈ្មោះ Project</th>
-                      <th className="p-4">បច្ចេកវិទ្យា</th>
-                      <th className="p-4 text-center">សកម្មភាព</th>
+                      <th className="p-4 font-khmer w-20">រូបភាព</th>
+                      <th className="p-4 font-khmer w-20">ឈ្មោះ Project</th>
+                      <th className="p-4 font-khmer w-20">បច្ចេកវិទ្យា</th>
+                      <th className="p-4 font-khmer w-20 text-center">សកម្មភាព</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800">
@@ -753,7 +671,7 @@ export default function AdminDashboard() {
         {/* ======================= TAB 2: SKILLS ======================= */}
         {activeTab === "skills" && (
           <div>
-            <h1 className="text-2xl font-bold mb-6">
+            <h1 className="text-2xl font-bold mb-6 font-khmer">
               ⚡ គ្រប់គ្រងជំនាញ (Skills Management)
             </h1>
             <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 mb-8 max-w-2xl">
@@ -762,7 +680,7 @@ export default function AdminDashboard() {
               </h3>
               <form onSubmit={handleSkillSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     ឈ្មោះជំនាញ
                   </label>
                   <input
@@ -773,7 +691,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     កម្រិតជំនាញ
                   </label>
                   <select
@@ -787,20 +705,20 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     រូបតំណាង (Emoji)
                   </label>
                   <input
                     type="text"
                     value={skillIcon}
                     onChange={(e) => setSkillIcon(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white font-khmer"
                   />
                 </div>
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-semibold px-5 py-2 rounded-lg"
+                    className="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-semibold px-5 py-2 rounded-lg font-khmer"
                   >
                     {isEditingSkill ? "រក្សាទុក" : "បន្ថែម"}
                   </button>
@@ -808,7 +726,7 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       onClick={resetSkillForm}
-                      className="bg-slate-700 px-5 py-2 rounded-lg"
+                      className="bg-slate-700 px-5 py-2 rounded-lg font-khmer"
                     >
                       បោះបង់
                     </button>
@@ -819,15 +737,15 @@ export default function AdminDashboard() {
 
             <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
               {loadingSkills ? (
-                <div className="p-8 text-center text-gray-400">កំពុងដើរ...</div>
+                <div className="p-8 text-center text-gray-400 font-khmer">កំពុងដើរ...</div>
               ) : (
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-800 text-slate-300 border-b border-slate-700">
-                      <th className="p-4 w-20">Icon</th>
-                      <th className="p-4">ឈ្មោះជំនាញ</th>
-                      <th className="p-4">កម្រិត</th>
-                      <th className="p-4 text-center">សកម្មភាព</th>
+                      <th className="p- font-khmer w-20">Icon</th>
+                      <th className="p- font-khmer">ឈ្មោះជំនាញ</th>
+                      <th className="p- font-khmer">កម្រិត</th>
+                      <th className="p- font-khmer text-center">សកម្មភាព</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800">
@@ -865,7 +783,7 @@ export default function AdminDashboard() {
         {/* ======================= TAB 3: EXPERIENCES ======================= */}
         {activeTab === "experiences" && (
           <div>
-            <h1 className="text-2xl font-bold mb-6">
+            <h1 className="text-2xl font-bold mb-6 font-khmer">
               💼 គ្រប់គ្រងបទពិសោធន៍ការងារ (Experiences Management)
             </h1>
             <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 mb-8 max-w-2xl">
@@ -876,7 +794,7 @@ export default function AdminDashboard() {
               </h3>
               <form onSubmit={handleExpSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     តួនាទី (Role / Position)
                   </label>
                   <input
@@ -888,7 +806,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     ឈ្មោះក្រុមហ៊ុន (Company)
                   </label>
                   <input
@@ -900,7 +818,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     រយៈពេលបម្រើការងារ (Duration)
                   </label>
                   <input
@@ -912,7 +830,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">
+                  <label className="block text-sm text-gray-400 mb-1 font-khmer">
                     ការពិពណ៌នាការងារ (Job Description)
                   </label>
                   <textarea
@@ -920,13 +838,13 @@ export default function AdminDashboard() {
                     value={expDescription}
                     onChange={(e) => setExpDescription(e.target.value)}
                     placeholder="រៀបរាប់ពីការងារ..."
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 font-khmer"
                   ></textarea>
                 </div>
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-semibold px-5 py-2 rounded-lg transition"
+                    className="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-semibold px-5 py-2 rounded-lg transition font-khmer"
                   >
                     {isEditingExp ? "រក្សាទុកការកែប្រែ" : "បន្ថែមបទពិសោធន៍"}
                   </button>
@@ -934,7 +852,7 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       onClick={resetExpForm}
-                      className="bg-slate-700 text-white px-5 py-2 rounded-lg"
+                      className="bg-slate-700 text-white px-5 py-2 rounded-lg font-khmer transition"
                     >
                       បោះបង់
                     </button>
@@ -949,17 +867,17 @@ export default function AdminDashboard() {
                   កំពុងទាញទិន្នន័យ...
                 </div>
               ) : experiences.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">
+                <div className="p-8 text-center text-gray-500 font-khmer">
                   មិនទាន់មានទិន្នន័យឡើយ។
                 </div>
               ) : (
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-800 text-slate-300 text-sm border-b border-slate-700">
-                      <th className="p-4">តួនាទី</th>
-                      <th className="p-4">ក្រុមហ៊ុន</th>
-                      <th className="p-4">រយៈពេល</th>
-                      <th className="p-4 text-center">សកម្មភាព</th>
+                      <th className="p-4 font-khmer">តួនាទី</th>
+                      <th className="p-4 font-khmer">ក្រុមហ៊ុន</th>
+                      <th className="p-4 font-khmer">រយៈពេល</th>
+                      <th className="p-4 font-khmer text-center">សកម្មភាព</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800 text-sm">

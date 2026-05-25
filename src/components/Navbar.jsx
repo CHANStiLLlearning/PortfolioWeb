@@ -7,15 +7,15 @@ export default function Navbar() {
 
   return (
     <nav className="bg-[#030712]/70 text-slate-100 sticky top-0 z-50 backdrop-blur-md border-b border-slate-800/80">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
         {/* LOGO DESIGN */}
         <Link
           to="/"
-          className="text-xl font-black tracking-wider group flex items-center gap-1.5"
+          className="text-[35px] font-black tracking-wider group flex items-center gap-1.5"
         >
           <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]"></span>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-300 group-hover:from-cyan-400 group-hover:to-blue-400 transition-all duration-300">
-            MyPortfolio
+            HOME
           </span>
         </Link>
 
@@ -23,7 +23,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center space-x-7">
           <a
             href="#about"
-            className="text-xs font-mono tracking-wide text-slate-400 hover:text-cyan-400 transition-colors duration-300"
+            className="xl:text-lg sm:text-sm font-mono tracking-wide text-white hover:text-cyan-400 transition-colors duration-300"
           >
             // About
           </a>
@@ -31,7 +31,7 @@ export default function Navbar() {
           {/* 💼 Experience Link */}
           <a
             href="#experience"
-            className="text-xs font-mono tracking-wide text-slate-400 hover:text-cyan-400 transition-colors duration-300"
+            className="xl:text-lg sm:text-sm font-mono tracking-wide text-w hover:text-cyan-400 transition-colors duration-300"
           >
             // Experience
           </a>
@@ -39,7 +39,7 @@ export default function Navbar() {
           {/* ⚡ Skills Link */}
           <a
             href="#skills"
-            className="text-xs font-mono tracking-wide text-slate-400 hover:text-cyan-400 transition-colors duration-300"
+            className="xl:text-lg sm:text-sm font-mono tracking-wide text-w hover:text-cyan-400 transition-colors duration-300"
           >
             // Skills
           </a>
@@ -47,7 +47,7 @@ export default function Navbar() {
           {/* 🚀 Projects Link */}
           <a
             href="#projects"
-            className="text-xs font-mono tracking-wide text-slate-400 hover:text-cyan-400 transition-colors duration-300"
+            className="xl:text-lg sm:text-sm font-mono tracking-wide text-w hover:text-cyan-400 transition-colors duration-300"
           >
             // Projects
           </a>
@@ -56,7 +56,7 @@ export default function Navbar() {
 
           {/* <Link
             to="/admin/login"
-            className="relative inline-flex items-center justify-center px-4 py-2 text-xs font-mono tracking-widest text-cyan-400 uppercase border border-cyan-500/30 rounded-lg overflow-hidden group transition-all duration-300 hover:border-cyan-400 hover:text-slate-950 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]"
+            className="relative inline-flex items-center justify-center px-4 py-2 text-lg font-mono tracking-widest text-cyan-400 uppercase border border-cyan-500/30 rounded-lg overflow-hidden group transition-all duration-300 hover:border-cyan-400 hover:text-slate-950 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]"
           >
             <span className="absolute inset-0 w-full h-full bg-cyan-400 scale-x-0 group-hover:scale-x-100 group-hover:duration-300 origin-left transition-transform ease-out -z-10"></span>
             Admin Login
